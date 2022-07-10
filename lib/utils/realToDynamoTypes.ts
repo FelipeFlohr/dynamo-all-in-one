@@ -1,5 +1,7 @@
+import _ from 'lodash'
 import DynamoBinary from '../models/DynamoBinary'
 import { DynamoAttributeTypes, DynamoDataTypes } from '../types/DynamoDataTypes'
+import { DynamoItem, DynamoItemsRealTypes } from '../types/Item'
 import { DynamoRealTypes, RealAttributeTypes } from '../types/RealDataTypes'
 
 export function realAttributesToDynamo (val: RealAttributeTypes): DynamoAttributeTypes {
@@ -15,6 +17,9 @@ export function realAttributesToDynamo (val: RealAttributeTypes): DynamoAttribut
 export function realToDynamo (val: DynamoRealTypes): DynamoDataTypes {
   if (val === null || val === undefined) {
     return 'NULL'
+  }
+  if (val instanceof DynamoBinary) {
+    return 'B'
   }
   if (val instanceof Set) {
     if ([...val].every(v => typeof (v) === 'number')) {
@@ -33,7 +38,7 @@ export function realToDynamo (val: DynamoRealTypes): DynamoDataTypes {
 
   switch (typeof (val)) {
     case 'boolean':
-      return 'B'
+      return 'BOOL'
     case 'number':
       return 'N'
     case 'string':
@@ -41,4 +46,47 @@ export function realToDynamo (val: DynamoRealTypes): DynamoDataTypes {
     case 'object':
       return 'M'
   }
+}
+
+export function handleValueToDynamo (val: DynamoRealTypes): DynamoItemsRealTypes {
+  if (val === undefined || val === null) {
+    return null
+  }
+
+  if (val instanceof DynamoBinary) {
+    return val.value
+  }
+
+  if (Array.isArray(val)) {
+    return val
+  }
+
+  if (val instanceof Set) {
+    const valArray = [...val]
+    if (valArray.every(v => v instanceof DynamoBinary)) {
+      return (valArray as DynamoBinary[]).map(v => v.value)
+    }
+    return valArray
+  }
+
+  if (typeof (val) === 'object') {
+    return _.mapValues(val, (v) => {
+      v as any
+      if (v instanceof DynamoBinary) {
+        return v.value
+      }
+      return v
+    })
+  }
+
+  return val
+}
+
+export function objectToDynamo (obj: DynamoItem) {
+  return _.mapValues(obj, (v, k) => {
+    const type = realToDynamo(v)
+    return {
+      [type]: type === 'NULL' ? null : handleValueToDynamo(v)
+    }
+  })
 }

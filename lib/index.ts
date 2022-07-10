@@ -1,5 +1,6 @@
 import { DynamoDB } from 'aws-sdk'
 import { DynamoAuthConfigs } from './types/Auth'
+import { DynamoItem } from './types/Item'
 import { CreateTableConfigs, DynamoProvisionedThroughput, SecondaryIndexes, TablePrimaryKey } from './types/Table'
 
 class DynamoAllInOne {
@@ -135,6 +136,10 @@ class DynamoAllInOne {
     return (await this.getAllTables()).some(t => {
       return t.trim().toLowerCase() === tableName.trim().toLowerCase()
     })
+  }
+
+  public async insertItem (tableName: string, item: DynamoItem) {
+
   }
 }
 
