@@ -1,0 +1,48 @@
+{
+  "name": "dynamo-all-in-one",
+  "version": "1.0.0",
+  "description": "Abstraction of AWS DynamoDB API",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run compile && cls && node dist/index.js",
+    "compile": "tsc",
+    "test": "cls && jest"
+  },
+  "keywords": [
+    "dynamo",
+    "dynamodb",
+    "aws"
+  ],
+  "author": "Felipe Matheus Flohr",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^28.1.4",
+    "@typescript-eslint/eslint-plugin": "^5.30.5",
+    "@typescript-eslint/parser": "^5.30.5",
+    "eslint": "^8.19.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.2.4",
+    "eslint-plugin-promise": "^6.0.0",
+    "jest": "^28.1.2",
+    "ts-jest": "^28.0.5",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1171.0"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/dist/"
+    ],
+    "transform": {
+      "node_modules/variables/.+\\.(j|t)sx?$": "ts-jest"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!variables/.*)"
+    ]
+  }
+}

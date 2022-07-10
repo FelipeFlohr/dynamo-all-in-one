@@ -1,0 +1,8 @@
+{
+    "auth": {
+        "secretKey": "Secreto",
+        "accessKey": "Acesso",
+        "region": "brazil",
+        "endpoint": "http://localhost:8000"
+    }
+}
