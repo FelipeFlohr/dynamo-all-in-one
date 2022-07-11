@@ -11,6 +11,10 @@ const dynamo = new DynamoAllInOne({
 })
 
 test('Table is being created and deleted', async () => {
+  if (await dynamo.tableExists('TableTest1')) {
+    await dynamo.deleteTable('TableTest1')
+  }
+
   await dynamo.createTable({
     tableName: 'TableTest1',
     tablePrimaryKey: {

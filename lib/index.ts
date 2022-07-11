@@ -1,7 +1,9 @@
 import { DynamoDB } from 'aws-sdk'
+import _ from 'lodash'
 import { DynamoAuthConfigs } from './types/Auth'
-import { DynamoItem } from './types/Item'
+import { DynamoItem, DynamoPrimaryKey, DynamoQueryAttribute, DynamoQueryPartitionKey, DynamoQuerySortKey, QueryItemsConfig } from './types/Item'
 import { CreateTableConfigs, DynamoProvisionedThroughput, SecondaryIndexes, TablePrimaryKey } from './types/Table'
+import { handleValueToDynamo, objectToDynamo, realToDynamo, toDynamoCondition } from './utils/realToDynamoTypes'
 
 class DynamoAllInOne {
   public readonly dynamo: DynamoDB
@@ -139,7 +141,100 @@ class DynamoAllInOne {
   }
 
   public async insertItem (tableName: string, item: DynamoItem) {
+    const itemObj = objectToDynamo(item)
+    await this.dynamo.putItem({
+      TableName: tableName,
+      Item: itemObj
+    }).promise()
+  }
 
+  public async insertItems (tableName: string, ...items: DynamoItem[]) {
+    for (const item of items) {
+      await this.insertItem(tableName, item)
+    }
+  }
+
+  public generatePrimaryKeyExpression (pk: DynamoQueryPartitionKey, sk?: DynamoQuerySortKey) {
+    const skValue = sk?.value
+
+    let exp = `${pk.keyName} = :pk`
+    if (skValue) {
+      exp = exp + ` AND ${sk.keyName} = :sk`
+    }
+
+    return exp
+  }
+
+  public generateFilterExpression (filters?: DynamoQueryAttribute[]) {
+    if (!filters) {
+      return undefined
+    }
+
+    return filters
+      .map((f, i) => {
+        if (f.operation === 'BETWEEN') {
+          return `${f.keyName} BETWEEN :${i}B1 AND :${i}B2`
+        } else if (f.operation === 'STARTSWITH') {
+          return `begins_with (${f.keyName}, :${i})`
+        } else {
+          return `${f.keyName} ${toDynamoCondition(f.operation)} :${i}`
+        }
+      })
+      .reduce((prev, curr) => {
+        return prev + ` AND ${curr}`
+      })
+  }
+
+  public generateValues (pk: DynamoPrimaryKey, filters?: DynamoQueryAttribute[]) {
+    const pkObj = {
+      ':pk': {
+        [realToDynamo(pk.partitionKey.value)]: handleValueToDynamo(pk.partitionKey.value)
+      }
+    }
+    const skObj = pk.sortKey !== undefined
+      ? {
+          ':sk': {
+            [realToDynamo(pk.sortKey.value)]: handleValueToDynamo(pk.sortKey.value)
+          }
+        }
+      : undefined
+
+    const filtersMapped = filters
+      ?.map((f, i) => {
+        if (f.operation === 'BETWEEN') {
+          if (f.values === undefined || f.values.length < 2) {
+            throw new Error('GENERATE_VALUES_ERROR: Two values not found in BETWEEN operation')
+          }
+
+          return {
+            [`:${i}B1`]: {
+              [realToDynamo(f.values[0])]: handleValueToDynamo(f.values[0])
+            },
+            [`:${i}B2`]: {
+              [realToDynamo(f.values[1])]: handleValueToDynamo(f.values[1])
+            }
+          }
+        } else {
+          return {
+            [`:${i}`]: {
+              [realToDynamo(f.value)]: handleValueToDynamo(f.value)
+            }
+          }
+        }
+      })
+      .reduce((prev, curr) => {
+        return _.merge(prev, curr)
+      })
+
+    return [pkObj, skObj, filtersMapped]
+      .filter(v => v !== undefined)
+      .reduce((prev, curr) => _.merge(prev, curr))
+  }
+
+  public async queryItems (configs: QueryItemsConfig) {
+    return await this.dynamo.query({
+      TableName: configs.tableName
+    }).promise()
   }
 }
 

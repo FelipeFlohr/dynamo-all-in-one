@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import DynamoBinary from '../models/DynamoBinary'
 import { DynamoAttributeTypes, DynamoDataTypes } from '../types/DynamoDataTypes'
-import { DynamoItem, DynamoItemsRealTypes } from '../types/Item'
+import { DynamoConditions, DynamoItem, DynamoItemsRealTypes } from '../types/Item'
 import { DynamoRealTypes, RealAttributeTypes } from '../types/RealDataTypes'
 
 export function realAttributesToDynamo (val: RealAttributeTypes): DynamoAttributeTypes {
@@ -77,6 +77,8 @@ export function handleValueToDynamo (val: DynamoRealTypes): DynamoItemsRealTypes
       }
       return v
     })
+  } else if (typeof (val) === 'number') {
+    return val.toString()
   }
 
   return val
@@ -89,4 +91,25 @@ export function objectToDynamo (obj: DynamoItem) {
       [type]: type === 'NULL' ? null : handleValueToDynamo(v)
     }
   })
+}
+
+export function toDynamoCondition (cond: DynamoConditions) {
+  switch (cond) {
+    case '==':
+      return '='
+    case '!=':
+      return 'NOT'
+    case '<=':
+      return '<='
+    case '<':
+      return '<'
+    case '>=':
+      return '>='
+    case '>':
+      return '>'
+    case 'BETWEEN':
+      return 'BETWEEN'
+    case 'STARTSWITH':
+      return 'begins_with'
+  }
 }
