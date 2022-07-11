@@ -1,10 +1,12 @@
 {
   "name": "dynamo-all-in-one",
-  "version": "1.0.0",
+  "version": "1.0.8",
   "description": "Abstraction of AWS DynamoDB API",
   "main": "index.js",
   "scripts": {
     "start": "npm run compile && cls && node dist/index.js",
+    "prepublishOnly": "npm run compile",
+    "prepublish": "npm run compile",
     "compile": "tsc",
     "test": "cls && jest"
   },
@@ -13,6 +15,19 @@
     "dynamodb",
     "aws"
   ],
+  "files": [
+    "dist",
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FelipeFlohr/dynamo-all-in-one.git"
+  },
+  "bugs": {
+    "url": "https://github.com/FelipeFlohr/dynamo-all-in-one/issues",
+    "email": "felipeflohrlol@gmail.com"
+  },
+  "homepage": "https://github.com/FelipeFlohr/dynamo-all-in-one#readme",
   "author": "Felipe Matheus Flohr",
   "license": "MIT",
   "devDependencies": {
@@ -20,6 +35,7 @@
     "@types/lodash": "^4.14.182",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
+    "dynamo-all-in-one": "^1.0.8",
     "eslint": "^8.19.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",

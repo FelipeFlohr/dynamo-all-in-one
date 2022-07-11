@@ -8,7 +8,7 @@ import { DynamoRealItem, DynamoPrimaryKey, DynamoQueryAttribute, DynamoQueryPart
 import { CreateTableConfigs, DynamoProvisionedThroughput, SecondaryIndexes, TablePrimaryKey } from './types/Table'
 import { handleValueToDynamo, objectToDynamo, realToDynamo, toDynamoCondition } from './utils/realToDynamoTypes'
 
-class DynamoAllInOne {
+export default class DynamoAllInOne {
   public readonly dynamo: DynamoDB
   private readonly configs: DynamoAuthConfigs
 
@@ -280,5 +280,3 @@ class DynamoAllInOne {
     })
   }
 }
-
-export default DynamoAllInOne
