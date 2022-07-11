@@ -1,7 +1,10 @@
+/* eslint-disable no-case-declarations */
 import { DynamoDB } from 'aws-sdk'
 import _ from 'lodash'
+import DynamoBinary from './models/DynamoBinary'
 import { DynamoAuthConfigs } from './types/Auth'
-import { DynamoItem, DynamoPrimaryKey, DynamoQueryAttribute, DynamoQueryPartitionKey, DynamoQuerySortKey, QueryItemsConfig } from './types/Item'
+import { DynamoDataTypes } from './types/DynamoDataTypes'
+import { DynamoRealItem, DynamoPrimaryKey, DynamoQueryAttribute, DynamoQueryPartitionKey, DynamoQuerySortKey, QueryItemsConfig, DynamoItem } from './types/Item'
 import { CreateTableConfigs, DynamoProvisionedThroughput, SecondaryIndexes, TablePrimaryKey } from './types/Table'
 import { handleValueToDynamo, objectToDynamo, realToDynamo, toDynamoCondition } from './utils/realToDynamoTypes'
 
@@ -140,7 +143,7 @@ class DynamoAllInOne {
     })
   }
 
-  public async insertItem (tableName: string, item: DynamoItem) {
+  public async insertItem (tableName: string, item: DynamoRealItem) {
     const itemObj = objectToDynamo(item)
     await this.dynamo.putItem({
       TableName: tableName,
@@ -148,7 +151,7 @@ class DynamoAllInOne {
     }).promise()
   }
 
-  public async insertItems (tableName: string, ...items: DynamoItem[]) {
+  public async insertItems (tableName: string, ...items: DynamoRealItem[]) {
     for (const item of items) {
       await this.insertItem(tableName, item)
     }
@@ -232,9 +235,49 @@ class DynamoAllInOne {
   }
 
   public async queryItems (configs: QueryItemsConfig) {
-    return await this.dynamo.query({
-      TableName: configs.tableName
+    const res = await this.dynamo.query({
+      TableName: configs.tableName,
+      KeyConditionExpression: this.generatePrimaryKeyExpression(configs.primaryKey.partitionKey, configs.primaryKey.sortKey),
+      FilterExpression: this.generateFilterExpression(configs.filters),
+      ExpressionAttributeValues: this.generateValues(configs.primaryKey, configs.filters)
     }).promise()
+
+    return res.Items?.map(v => this.convertToRealType(v as any)) as any[]
+  }
+
+  private convertToRealType (item?: DynamoItem): DynamoRealItem | undefined {
+    if (item === undefined) {
+      return undefined
+    }
+
+    return _.mapValues(item, (v, k) => {
+      const type = Object.entries(v)[0][0] as DynamoDataTypes
+      const value = Object.entries(v)[0][1] as string | number | null | undefined | boolean | any[]
+
+      switch (type) {
+        case 'B':
+          return new DynamoBinary(DynamoBinary.decodeValue(value as string))
+        case 'BOOL':
+          return value === true || value === 'true'
+        case 'BS':
+          return (value as string[])
+            .map(v => new DynamoBinary(DynamoBinary.decodeValue(v)))
+        case 'L':
+          return value
+        case 'M':
+          return value
+        case 'NS':
+          return new Set<number>(value as number[])
+        case 'NULL':
+          return null
+        case 'S':
+          return `${value}`
+        case 'SS':
+          return new Set<string>(value as string[])
+        case 'N':
+          return parseFloat(value as string)
+      }
+    })
   }
 }
 

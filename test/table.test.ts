@@ -24,8 +24,8 @@ test('Table is being created and deleted', async () => {
       }
     },
     provisionedThroughput: {
-      readUnits: 40000,
-      writeUnits: 40000
+      readUnits: 100,
+      writeUnits: 100
     }
   })
 

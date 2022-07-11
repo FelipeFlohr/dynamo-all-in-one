@@ -1,11 +1,21 @@
 import DynamoBinary from '../models/DynamoBinary'
+import { DynamoDataTypes } from './DynamoDataTypes'
 import { DynamoRealTypes } from './RealDataTypes'
 
 /**
  * Represents a DynamoDB item
  */
-export type DynamoItem = {
+export type DynamoRealItem = {
     [key: string]: DynamoRealTypes
+}
+
+export type DynamoItemType = {
+    // eslint-disable-next-line no-unused-vars
+    [key in DynamoDataTypes]: string | number | null | undefined | boolean | any[]
+}
+
+export type DynamoItem = {
+    [key: string]: DynamoItemType
 }
 
 export type DynamoMapItem = {

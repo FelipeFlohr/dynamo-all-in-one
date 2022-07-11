@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import DynamoBinary from '../models/DynamoBinary'
 import { DynamoAttributeTypes, DynamoDataTypes } from '../types/DynamoDataTypes'
-import { DynamoConditions, DynamoItem, DynamoItemsRealTypes } from '../types/Item'
+import { DynamoConditions, DynamoRealItem, DynamoItemsRealTypes } from '../types/Item'
 import { DynamoRealTypes, RealAttributeTypes } from '../types/RealDataTypes'
 
 export function realAttributesToDynamo (val: RealAttributeTypes): DynamoAttributeTypes {
@@ -84,7 +84,7 @@ export function handleValueToDynamo (val: DynamoRealTypes): DynamoItemsRealTypes
   return val
 }
 
-export function objectToDynamo (obj: DynamoItem) {
+export function objectToDynamo (obj: DynamoRealItem) {
   return _.mapValues(obj, (v, k) => {
     const type = realToDynamo(v)
     return {
