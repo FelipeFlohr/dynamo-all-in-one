@@ -1,6 +1,6 @@
 {
   "name": "dynamo-all-in-one",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "description": "Abstraction of AWS DynamoDB API",
   "main": "index.js",
   "scripts": {

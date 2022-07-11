@@ -70,13 +70,7 @@ export function handleValueToDynamo (val: DynamoRealTypes): DynamoItemsRealTypes
   }
 
   if (typeof (val) === 'object') {
-    return _.mapValues(val, (v) => {
-      v as any
-      if (v instanceof DynamoBinary) {
-        return v.value
-      }
-      return v
-    })
+    return objectToDynamo(val)
   } else if (typeof (val) === 'number') {
     return val.toString()
   }

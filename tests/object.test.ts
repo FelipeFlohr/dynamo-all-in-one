@@ -42,8 +42,12 @@ test('Object is being converted to the AWS API type', () => {
     },
     obj: {
       M: {
-        firstName: 'John',
-        bin: DynamoBinary.encodeValue('John Doe')
+        firstName: {
+          S: 'John'
+        },
+        bin: {
+          B: DynamoBinary.encodeValue('John Doe')
+        }
       }
     }
   })
@@ -170,6 +174,29 @@ test('Filter is being generated', () => {
     },
     ':1': {
       N: '2'
+    }
+  })
+})
+
+test('Value of Map type is being converted to Dynamo type', () => {
+  const val = {
+    details: {
+      name: 'Felipe',
+      age: 20
+    }
+  }
+
+  const res = objectToDynamo(val)
+  expect(res).toStrictEqual({
+    details: {
+      M: {
+        name: {
+          S: 'Felipe'
+        },
+        age: {
+          N: '20'
+        }
+      }
     }
   })
 })

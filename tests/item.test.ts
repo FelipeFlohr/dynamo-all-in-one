@@ -57,7 +57,6 @@ test('Item is being created', async () => {
     }
   })
 
-  console.log(query)
   await dynamo.deleteTable(tableName)
   expect(query?.length === 50)
 })
