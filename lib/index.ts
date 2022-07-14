@@ -344,7 +344,7 @@ export default class DynamoAllInOne {
 				case "NS":
 					return new Set<number>(value as number[]);
 				case "NULL":
-					return null;
+					return true;
 				case "S":
 					return `${value}`;
 				case "SS":

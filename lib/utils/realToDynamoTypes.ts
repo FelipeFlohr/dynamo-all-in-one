@@ -61,7 +61,7 @@ export function handleValueToDynamo(
 	val: DynamoRealTypes
 ): DynamoItemsRealTypes {
 	if (val === undefined || val === null) {
-		return null;
+		return true;
 	}
 
 	if (val instanceof DynamoBinary) {
@@ -97,7 +97,7 @@ export function objectToDynamo(obj: DynamoRealItem) {
 	return _.mapValues(obj, (v, k) => {
 		const type = realToDynamo(v);
 		return {
-			[type]: type === "NULL" ? null : handleValueToDynamo(v),
+			[type]: type === "NULL" ? true : handleValueToDynamo(v),
 		};
 	});
 }
