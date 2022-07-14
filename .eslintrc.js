@@ -1,19 +1,5 @@
-module.exports = {
-  env: {
-    browser: true,
-    es2021: true
-  },
-  extends: [
-    'standard'
-  ],
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module'
-  },
-  plugins: [
-    '@typescript-eslint'
-  ],
-  rules: {
-  }
-}
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-undef */
+const { eslintConfigs } = require("ambisis_node_helper");
+
+module.exports = eslintConfigs;

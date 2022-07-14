@@ -1,42 +1,42 @@
-import { auth } from './dynamoLocalAccess.json'
-import DynamoAllInOne from '../lib/index'
+import { auth } from "./dynamoLocalAccess.json";
+import DynamoAllInOne from "../lib/index";
 
 /* eslint-disable no-undef */
 // Dynamo instance
 const dynamo = new DynamoAllInOne({
-  accessKeyId: auth.accessKey,
-  region: auth.region,
-  secretKeyId: auth.secretKey,
-  endpoint: auth.endpoint
-})
+	accessKeyId: auth.accessKey,
+	region: auth.region,
+	secretKeyId: auth.secretKey,
+	endpoint: auth.endpoint,
+});
 
-test('Table is being created and deleted', async () => {
-  if (await dynamo.tableExists('TableTest1')) {
-    await dynamo.deleteTable('TableTest1')
-  }
+test("Table is being created and deleted", async () => {
+	if (await dynamo.tableExists("TableTest1")) {
+		await dynamo.deleteTable("TableTest1");
+	}
 
-  await dynamo.createTable({
-    tableName: 'TableTest1',
-    tablePrimaryKey: {
-      partitionKey: {
-        partitionKeyName: 'id',
-        partitionKeyType: 'S'
-      }
-    },
-    provisionedThroughput: {
-      readUnits: 100,
-      writeUnits: 100
-    }
-  })
+	await dynamo.createTable({
+		tableName: "TableTest1",
+		tablePrimaryKey: {
+			partitionKey: {
+				partitionKeyName: "id",
+				partitionKeyType: "S",
+			},
+		},
+		provisionedThroughput: {
+			readUnits: 100,
+			writeUnits: 100,
+		},
+	});
 
-  const tableTest1Exists = await dynamo.tableExists('TableTest1')
-  expect(tableTest1Exists).toBeTruthy()
+	const tableTest1Exists = await dynamo.tableExists("TableTest1");
+	expect(tableTest1Exists).toBeTruthy();
 
-  // Deletes the table
-  await dynamo.deleteTable('TableTest1')
-  const tableTest1ExistsAfterDelete = await dynamo.tableExists('TableTest1')
-  expect(tableTest1ExistsAfterDelete).toBeFalsy()
+	// Deletes the table
+	await dynamo.deleteTable("TableTest1");
+	const tableTest1ExistsAfterDelete = await dynamo.tableExists("TableTest1");
+	expect(tableTest1ExistsAfterDelete).toBeFalsy();
 
-  // Checks if a random table does not exists
-  expect(await dynamo.tableExists('Blablabla')).toBeFalsy()
-})
+	// Checks if a random table does not exists
+	expect(await dynamo.tableExists("Blablabla")).toBeFalsy();
+});

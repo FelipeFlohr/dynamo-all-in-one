@@ -1,63 +1,67 @@
 {
-  "name": "dynamo-all-in-one",
-  "version": "1.1.0",
-  "description": "Abstraction of AWS DynamoDB API",
-  "main": "index.js",
-  "scripts": {
-    "start": "npm run compile && cls && node dist/index.js",
-    "compile": "gulp",
-    "customPub": "npm run compile && cd dist && npm publish",
-    "test": "cls && jest"
-  },
-  "keywords": [
-    "dynamo",
-    "dynamodb",
-    "aws"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/FelipeFlohr/dynamo-all-in-one.git"
-  },
-  "bugs": {
-    "url": "https://github.com/FelipeFlohr/dynamo-all-in-one/issues",
-    "email": "felipeflohrlol@gmail.com"
-  },
-  "homepage": "https://github.com/FelipeFlohr/dynamo-all-in-one#readme",
-  "author": "Felipe Matheus Flohr",
-  "license": "MIT",
-  "devDependencies": {
-    "@types/gulp": "^4.0.9",
-    "@types/jest": "^28.1.4",
-    "@types/lodash": "^4.14.182",
-    "@typescript-eslint/eslint-plugin": "^5.30.5",
-    "@typescript-eslint/parser": "^5.30.5",
-    "eslint": "^8.19.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-n": "^15.2.4",
-    "eslint-plugin-promise": "^6.0.0",
-    "gulp": "^4.0.2",
-    "gulp-typescript": "^6.0.0-alpha.1",
-    "jest": "^28.1.2",
-    "ts-jest": "^28.0.5",
-    "typescript": "^4.7.4"
-  },
-  "dependencies": {
-    "aws-sdk": "^2.1171.0",
-    "lodash": "^4.17.21"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node",
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/dist/"
-    ],
-    "transform": {
-      "node_modules/variables/.+\\.(j|t)sx?$": "ts-jest"
-    },
-    "transformIgnorePatterns": [
-      "node_modules/(?!variables/.*)"
-    ]
-  }
+	"name": "dynamo-all-in-one",
+	"version": "1.1.1",
+	"description": "Abstraction of AWS DynamoDB API",
+	"main": "index.js",
+	"scripts": {
+		"customPub": "npm run compile && cd dist && npm publish",
+		"test": "cls && jest",
+		"compile": "npm run format && npm run lint && gulp",
+		"lint": "eslint --ignore-path .gitignore --ext .js,.ts .",
+		"format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
+	},
+	"keywords": [
+		"dynamo",
+		"dynamodb",
+		"aws"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/FelipeFlohr/dynamo-all-in-one.git"
+	},
+	"bugs": {
+		"url": "https://github.com/FelipeFlohr/dynamo-all-in-one/issues",
+		"email": "felipeflohrlol@gmail.com"
+	},
+	"homepage": "https://github.com/FelipeFlohr/dynamo-all-in-one#readme",
+	"author": "Felipe Matheus Flohr",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/gulp": "^4.0.9",
+		"@types/jest": "^28.1.4",
+		"@types/lodash": "^4.14.182",
+		"@typescript-eslint/eslint-plugin": "^5.30.6",
+		"@typescript-eslint/parser": "^5.30.6",
+		"ambisis_node_helper": "^1.0.9",
+		"eslint": "^8.19.0",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-config-standard": "^17.0.0",
+		"eslint-plugin-import": "^2.26.0",
+		"eslint-plugin-n": "^15.2.4",
+		"eslint-plugin-promise": "^6.0.0",
+		"gulp": "^4.0.2",
+		"gulp-typescript": "^6.0.0-alpha.1",
+		"jest": "^28.1.2",
+		"prettier": "^2.7.1",
+		"ts-jest": "^28.0.5",
+		"typescript": "^4.7.4"
+	},
+	"dependencies": {
+		"aws-sdk": "^2.1171.0",
+		"lodash": "^4.17.21"
+	},
+	"jest": {
+		"preset": "ts-jest",
+		"testEnvironment": "node",
+		"testPathIgnorePatterns": [
+			"/node_modules/",
+			"/dist/"
+		],
+		"transform": {
+			"node_modules/variables/.+\\.(j|t)sx?$": "ts-jest"
+		},
+		"transformIgnorePatterns": [
+			"node_modules/(?!variables/.*)"
+		]
+	}
 }
