@@ -157,6 +157,14 @@ export default class DynamoAllInOne {
     }
   }
 
+  public async deleteItem (tableName: string, item: DynamoRealItem) {
+    const itemObj = objectToDynamo(item)
+    return await this.dynamo.deleteItem({
+      Key: itemObj,
+      TableName: tableName
+    }).promise()
+  }
+
   public generatePrimaryKeyExpression (pk: DynamoQueryPartitionKey, sk?: DynamoQuerySortKey) {
     const skValue = sk?.value
 
