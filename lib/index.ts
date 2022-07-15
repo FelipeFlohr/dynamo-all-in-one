@@ -1,9 +1,7 @@
 /* eslint-disable no-case-declarations */
 import { DynamoDB } from "aws-sdk";
 import _ from "lodash";
-import DynamoBinary from "./models/DynamoBinary";
 import { DynamoAuthConfigs } from "./types/Auth";
-import { DynamoDataTypes } from "./types/DynamoDataTypes";
 import {
 	DynamoRealItem,
 	DynamoPrimaryKey,
@@ -25,6 +23,7 @@ import {
 	realToDynamo,
 	toDynamoCondition,
 } from "./utils/realToDynamoTypes";
+import aws from "aws-sdk";
 
 export default class DynamoAllInOne {
 	public readonly dynamo: DynamoDB;
@@ -313,45 +312,15 @@ export default class DynamoAllInOne {
 		return res.Items?.map((v) => this.convertToRealType(v as any)) as any[];
 	}
 
-	private convertToRealType(item?: DynamoItem): DynamoRealItem | undefined {
+	public convertToRealType(item?: DynamoItem): DynamoRealItem | undefined {
 		if (item === undefined) {
 			return undefined;
 		}
 
-		return _.mapValues(item, (v, k) => {
-			const type = Object.entries(v)[0][0] as DynamoDataTypes;
-			const value = Object.entries(v)[0][1] as
-				| string
-				| number
-				| null
-				| undefined
-				| boolean
-				| any[];
-
-			switch (type) {
-				case "B":
-					return new DynamoBinary(DynamoBinary.decodeValue(value as string));
-				case "BOOL":
-					return value === true || value === "true";
-				case "BS":
-					return (value as string[]).map(
-						(v) => new DynamoBinary(DynamoBinary.decodeValue(v))
-					);
-				case "L":
-					return value;
-				case "M":
-					return value;
-				case "NS":
-					return new Set<number>(value as number[]);
-				case "NULL":
-					return true;
-				case "S":
-					return `${value}`;
-				case "SS":
-					return new Set<string>(value as string[]);
-				case "N":
-					return parseFloat(value as string);
-			}
+		const res = DynamoDB.Converter.unmarshall(item as DynamoDB.AttributeMap, {
+			convertEmptyValues: true
 		});
+
+		return res as DynamoRealItem;
 	}
 }

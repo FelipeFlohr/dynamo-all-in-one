@@ -11,13 +11,14 @@ export type DynamoRealItem = {
 
 export type DynamoItemType = {
 	// eslint-disable-next-line no-unused-vars
-	[key in DynamoDataTypes]:
+	[key in DynamoDataTypes]?:
 		| string
 		| number
 		| null
 		| undefined
 		| boolean
-		| any[];
+		| any[]
+		| DynamoItem
 };
 
 export type DynamoItem = {
