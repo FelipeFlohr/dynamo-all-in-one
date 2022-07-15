@@ -318,7 +318,7 @@ export default class DynamoAllInOne {
 		}
 
 		const res = DynamoDB.Converter.unmarshall(item as DynamoDB.AttributeMap, {
-			convertEmptyValues: true
+			convertEmptyValues: true,
 		});
 
 		return res as DynamoRealItem;

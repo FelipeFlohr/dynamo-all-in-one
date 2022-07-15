@@ -18,7 +18,7 @@ export type DynamoItemType = {
 		| undefined
 		| boolean
 		| any[]
-		| DynamoItem
+		| DynamoItem;
 };
 
 export type DynamoItem = {
