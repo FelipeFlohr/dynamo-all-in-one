@@ -1,5 +1,6 @@
 import _ from "lodash";
 import DynamoBinary from "../models/DynamoBinary";
+import DynamoDB from "aws-sdk/clients/dynamodb";
 import {
 	DynamoAttributeTypes,
 	DynamoDataTypes,
@@ -94,12 +95,7 @@ export function handleValueToDynamo(
 }
 
 export function objectToDynamo(obj: DynamoRealItem) {
-	return _.mapValues(obj, (v, k) => {
-		const type = realToDynamo(v);
-		return {
-			[type]: type === "NULL" ? true : handleValueToDynamo(v),
-		};
-	});
+	return DynamoDB.Converter.marshall(obj, { convertEmptyValues: true });
 }
 
 export function toDynamoCondition(cond: DynamoConditions) {

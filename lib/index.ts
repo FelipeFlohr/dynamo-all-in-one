@@ -23,7 +23,6 @@ import {
 	realToDynamo,
 	toDynamoCondition,
 } from "./utils/realToDynamoTypes";
-import aws from "aws-sdk";
 
 export default class DynamoAllInOne {
 	public readonly dynamo: DynamoDB;
