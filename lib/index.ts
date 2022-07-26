@@ -37,6 +37,7 @@ export default class DynamoAllInOne {
 			},
 			region: configs.region,
 			endpoint: configs.endpoint,
+			apiVersion: "latest",
 		});
 	}
 
