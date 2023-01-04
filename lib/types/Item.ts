@@ -1,4 +1,4 @@
-import DynamoBinary from "../models/DynamoBinary";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DynamoDataTypes } from "./DynamoDataTypes";
 import { DynamoRealTypes } from "./RealDataTypes";
 
@@ -50,18 +50,18 @@ export type DynamoConditions =
 export type DynamoQueryAttribute = {
 	keyName: string;
 	operation: DynamoConditions;
-	value?: string | number | boolean | DynamoBinary;
-	values?: string[] | number[] | DynamoBinary[];
+	value?: string | number | boolean;
+	values?: string[] | number[];
 };
 
 export type DynamoQueryPartitionKey = {
 	keyName: string;
-	value: string | number | DynamoBinary;
+	value: string | number;
 };
 
 export type DynamoQuerySortKey = {
 	keyName: string;
-	value: string | number | DynamoBinary;
+	value: string | number;
 };
 
 export type DynamoPrimaryKey = {
@@ -74,4 +74,10 @@ export type QueryItemsConfig = {
 	keyName?: string;
 	primaryKey: DynamoPrimaryKey;
 	filters?: DynamoQueryAttribute[];
+};
+
+export type DynamoGeneratedValues = {
+	[x: string]: {
+		[x: string]: DynamoItemsRealTypes;
+	};
 };

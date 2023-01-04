@@ -1,5 +1,3 @@
-import _ from "lodash";
-import DynamoBinary from "../models/DynamoBinary";
 import DynamoDB from "aws-sdk/clients/dynamodb";
 import {
 	DynamoAttributeTypes,
@@ -11,6 +9,7 @@ import {
 	DynamoItemsRealTypes,
 } from "../types/Item";
 import { DynamoRealTypes, RealAttributeTypes } from "../types/RealDataTypes";
+import InvalidDataTypeError from "../errors/InvalidDataTypeError";
 
 export function realAttributesToDynamo(
 	val: RealAttributeTypes
@@ -18,26 +17,19 @@ export function realAttributesToDynamo(
 	if (typeof val === "string") {
 		return "S";
 	}
-	if (typeof val === "number") {
-		return "N";
-	}
-	return "B";
+	return "N";
 }
 
 export function realToDynamo(val: DynamoRealTypes): DynamoDataTypes {
 	if (val === null || val === undefined) {
 		return "NULL";
 	}
-	if (val instanceof DynamoBinary) {
-		return "B";
-	}
+
 	if (val instanceof Set) {
 		if ([...val].every((v) => typeof v === "number")) {
 			return "NS";
 		} else if ([...val].every((v) => typeof v === "string")) {
 			return "SS";
-		} else if ([...val].every((v) => v instanceof DynamoBinary)) {
-			return "BS";
 		} else {
 			return "NULL";
 		}
@@ -55,6 +47,8 @@ export function realToDynamo(val: DynamoRealTypes): DynamoDataTypes {
 			return "S";
 		case "object":
 			return "M";
+		default:
+			throw new InvalidDataTypeError(val);
 	}
 }
 
@@ -63,10 +57,6 @@ export function handleValueToDynamo(
 ): DynamoItemsRealTypes {
 	if (val === undefined || val === null) {
 		return true;
-	}
-
-	if (val instanceof DynamoBinary) {
-		return val.value;
 	}
 
 	if (Array.isArray(val)) {
@@ -79,9 +69,6 @@ export function handleValueToDynamo(
 
 	if (val instanceof Set) {
 		const valArray = [...val];
-		if (valArray.every((v) => v instanceof DynamoBinary)) {
-			return (valArray as DynamoBinary[]).map((v) => v.value);
-		}
 		return valArray;
 	}
 
